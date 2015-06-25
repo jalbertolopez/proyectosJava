@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:drools="http://drools.org/schema/drools-spring"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://drools.org/schema/drools-spring http://drools.org/schema/drools-spring-1.5.0.xsd">
+
+	<!-- KNOWLEDGE BASE FOR A GIVEN TYPE -->
+	<drools:kbase id="kbase">
+		<drools:resources>
+			<drools:resource type="DRL"
+				source="classpath:rules/alertasPLD.drl" />
+		</drools:resources>
+	</drools:kbase>
+
+	<drools:ksession id="ksession" type="stateless" kbase="kbase" />
+
+	<bean id="ruleRunner" class="mx.bbv.alerts.drools.RuleRunner">
+		<property name="ksession" ref="ksession" />
+	</bean>
+
+</beans>

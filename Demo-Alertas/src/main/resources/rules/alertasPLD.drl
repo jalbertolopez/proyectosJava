@@ -1,0 +1,8 @@
+import mx.bbv.alerts.model.TransactionAcumulate;
+
+rule "Alertas PLD"
+when
+  trans:TransactionAcumulate (montoAcumulado > 4000.0 && tipoPersona == "FISICA" && sucursalGestora == "0012")
+then
+  trans.printAlert();
+end

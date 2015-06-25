@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jms="http://www.springframework.org/schema/jms"
+	xmlns:rabbit="http://www.springframework.org/schema/rabbit"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/rabbit
+        http://www.springframework.org/schema/rabbit/spring-rabbit.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+	
+	<!-- IMPORTAMOS CONTEXTO DE LOS SERVICIOS 
+	<import resource="alertas-services-context.xml" /-->
+	
+	<!-- GENERAMOS UN BEAN PROPERTIES -->
+	<util:properties id="queuesProperties" location="classpath:rabbitmq.properties" />
+
+	<!-- LEEMOS EL ARCHIVO DE PROPIEDADES -->
+	<context:property-placeholder location="classpath:rabbitmq.properties"
+		ignore-unresolvable="true" local-override="true" />
+
+	<!-- CREAMOS BEAN PARA LAS PROPIEDADES -->
+	<bean id="queueUtilProperties" class="mx.bbv.alerts.utils.QueueUtilProperties">
+		<property name="properties" ref="queuesProperties" />
+	</bean>
+
+	<!-- ESTABLECEMOS LA CONEXIÓN, LAS QUEUES Y EL TEMPLATE PARA HACER PUSH 
+		Y POP -->
+	<rabbit:connection-factory id="connectionFactory" />
+	<rabbit:template id="amqpTemplate" connection-factory="connectionFactory" />
+	<rabbit:admin connection-factory="connectionFactory" />
+	<rabbit:queue id="alertasOutQueue" />
+
+	<!-- CREAMOS EL LISTENER PARA LA QUEUE ALERTAS.OUT -->
+	<rabbit:listener-container
+		connection-factory="connectionFactory">
+		<rabbit:listener queues="alertasOutQueue" ref="queueListener"
+			method="receiveMessage" />
+	</rabbit:listener-container>
+
+	<!-- CONFIGURAMOS LOS PARAMETROS DE LA CONEXIÓN -->
+	<bean id="connectionFactory"
+		class="org.springframework.amqp.rabbit.connection.CachingConnectionFactory">
+		<constructor-arg value="${broker.host}" />
+		<property name="username" value="${broker.user}" />
+		<property name="password" value="${broker.password}" />
+	</bean>
+
+	<!-- POJO LISTENER PARA ALERTAS.OUT --> 
+	<bean id="queueListener" class="mx.bbv.alerts.jms.listener.Receiver">
+		<property name="alertsBSImpl" ref="alertsBS" />
+	</bean>
+
+
+	<!-- SE CREA LA QUEUE ALERTAS.OUT -->
+	<bean id="alertasOutQueue" class="org.springframework.amqp.core.Queue">
+		<constructor-arg value="${alertas.out.queue}" />
+	</bean>
+
+</beans>
