@@ -55,9 +55,21 @@ public class RabbitMQTest {
 		String dateInString = "31-08-2014 10:20:56";
 		Date date = sdf.parse(dateInString);
 		//int i = 0;
-		for(int i = 0;; i++){		
-			String jsonFormat = JsonConverter.toJson(new TransactionRaw("Alan Orlando","Cruz Manrique", "FISICA", "0011", date , new Date(),"ABONO", 1000.0, "0001", "000" + i, "12345678", "LIBRETON","DF"));
-			//String jsonFormat = JsonConverter.toJson(new Transaction("Pedro qwertyu","qwer asdf", "FISICA", "Coyoacan", date , new Date(),"ABONO", 1000.0, "0002", "000" + i, "12345678", "LIBRETON","DF"));
+		for(int i = 0;; i++){
+			
+			/*String nombres, String apellidos, String tipoPersona,
+			String fechaAltaCliente, String fechaAltaCuenta, String fechaOperacion,
+			String tipoOperacion, Double monto, String idCliente,
+			String idTransaccion, String cuenta, String producto, String crOp,
+			String crCuenta*/
+			
+			String jsonFormat = JsonConverter.toJson(
+					new TransactionRaw("Alan Orlando","Cruz Manrique", "FISICA", 
+							"2015-06-19","2015-06-19","2015-06-11 17:59:32",
+							"ABONO", 1000.0, "A0000079", 
+							"000" + i, "01234567890123456789", "LIBRETON","0050",
+							"0000"));
+			
 			logger.info("\n\n\tEnviando mensaje a la queue \n\n[{}]", jsonFormat);
 			template.convertAndSend(queueProperties.getByName("alertas.out.queue"), jsonFormat);
 			Thread.sleep(10000);
@@ -74,7 +86,7 @@ public class RabbitMQTest {
 	public void pushAlertFileTest() throws IOException, ParseException, InterruptedException {
 	    String cadena;
 	    SimpleDateFormat sdf = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
-	    FileReader f = new FileReader("/home/alan/Escritorio/transacciones.csv");
+	    FileReader f = new FileReader("/home/alan/Escritorio/transacciones2.csv");
 	    BufferedReader b = new BufferedReader(f);
 	    TransactionRaw tr = new TransactionRaw();
 	    boolean first = true;
@@ -86,21 +98,23 @@ public class RabbitMQTest {
 		         tr.setNombres(attr[0]);
 		         tr.setApellidos(attr[1]);
 		         tr.setTipoPersona(attr[2]);
-		         tr.setSucursalGestora(attr[3]);
-		         tr.setAltaCuenta(sdf.parse(attr[4]));
-		         tr.setTipoOperacion(attr[5]);
-		         tr.setMonto(Double.parseDouble(attr[6]));
-		         tr.setIdCliente(attr[7]);
-		         tr.setIdTransaccion(attr[8]);
-		         tr.setCuenta(attr[9]);
-		         tr.setProducto(attr[10]);
-		         tr.setSucursal(attr[11]);	         
-		         tr.setFechaOperacion(new Date());
+		         tr.setFechaAltaCliente(attr[3]);
+		         tr.setFechaAltaCuenta(attr[4]);
+		         tr.setFechaOperacion(attr[5]);
+		         tr.setTipoOperacion(attr[6]);
+		         tr.setMonto(Double.parseDouble(attr[7]));
+		         tr.setIdCliente(attr[8]);
+		         tr.setIdTransaccion(attr[9]);
+		         tr.setCuenta(attr[10]);
+		         tr.setProducto(attr[11]);
+		         tr.setCrOp(attr[12]);
+		         tr.setCrCuenta(attr[13]);
+		         
 		         
 		         String jsonFormat = JsonConverter.toJson(tr);
 		         logger.info("\n\n\tEnviando mensaje a la queue \n\n[{}]", jsonFormat);
 				 template.convertAndSend(queueProperties.getByName("alertas.out.queue"), jsonFormat);
-				 Thread.sleep(10000);
+				 Thread.sleep(3000);
 		     }
 	    	 first = false;
 	    }

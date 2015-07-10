@@ -10,47 +10,49 @@ public class TransactionRaw implements Serializable {
 	private String nombres;
 	private String apellidos;
 	private String tipoPersona; // FISICA o MORAL
-	private String sucursalGestora; // ZONA GEOGRÁFICA DE LA SUCURSAL DONDE SE ABRIO LA CUENTA
-	private Date altaCuenta; // FECHA DE APERTURA DE LA CUENTA
-	private Date fechaOperacion; // FECHA EXACTA TRANSACCIÓN
+	private String fechaAltaCliente; // FECHA DE ALTA CLIENTE
+	private String fechaAltaCuenta; // FECHA DE APERTURA DE LA CUENTA
+	private String fechaOperacion; // FECHA EXACTA TRANSACCIÓN
 	private String tipoOperacion; // ABONO O RETIRO
 	private Double monto; // MONTO DE LA OPERACION
 	private String idCliente; // IDENTIFICADOR ÚNICO CLIENTE
 	private String idTransaccion; // IDENTIFICADOR ÚNICO DE LA TRANSACCIÓN
 	private String cuenta; // NÚMERO DE CUENTA
 	private String producto; // LIBRETONES, PRACTICAJAS, ETC
-	private String sucursal; // ZONA GEOGRÁFICA DE LA SUCURSAL DE LA TRANSACCIÓN
+	private String crOp; // CR OPERACIÓN
+	private String crCuenta; // CR de la cuenta
 
 
 	public TransactionRaw() {
 		super();
 	}
 
-	
+
 	@Override
 	public String toString() {
-		return "TransactionRaw [nombres=" + nombres
-				+ ", apellidos=" + apellidos + ", tipoPersona=" + tipoPersona
-				+ ", sucursalGestora=" + sucursalGestora + ", altaCuenta="
-				+ altaCuenta + ", fechaOperacion=" + fechaOperacion
-				+ ", tipoOperacion=" + tipoOperacion + ", monto=" + monto
-				+ ", idCliente=" + idCliente + ", idTransaccion="
-				+ idTransaccion + ", cuenta=" + cuenta + ", producto="
-				+ producto + ", sucursal="+sucursal+"]";
+		return "TransactionRaw [nombres=" + nombres + ", apellidos="
+				+ apellidos + ", tipoPersona=" + tipoPersona
+				+ ", fechaAltaCliente=" + fechaAltaCliente
+				+ ", fechaAltaCuenta=" + fechaAltaCuenta + ", fechaOperacion="
+				+ fechaOperacion + ", tipoOperacion=" + tipoOperacion
+				+ ", monto=" + monto + ", idCliente=" + idCliente
+				+ ", idTransaccion=" + idTransaccion + ", cuenta=" + cuenta
+				+ ", producto=" + producto + ", crOp=" + crOp + ", crCuenta="
+				+ crCuenta + "]";
 	}
 
 
-	// "Alan Orlando","Cruz Manrique", "FISICA", "Coyoacan", date , new Date(), "ABONO", 1000.0,"0001", "000" + i, "12345678" , "LIBRETON"
-	public TransactionRaw(String nombre, String apellido, String tipoPersona,
-			String sucursalGestora, Date altaCuenta, Date fechaOperacion,
+	public TransactionRaw(String nombres, String apellidos, String tipoPersona,
+			String fechaAltaCliente, String fechaAltaCuenta, String fechaOperacion,
 			String tipoOperacion, Double monto, String idCliente,
-			String idTransaccion, String cuenta, String producto, String sucursal) {
+			String idTransaccion, String cuenta, String producto, String crOp,
+			String crCuenta) {
 		super();
-		this.nombres = nombre;
-		this.apellidos = apellido;
+		this.nombres = nombres;
+		this.apellidos = apellidos;
 		this.tipoPersona = tipoPersona;
-		this.sucursalGestora = sucursalGestora;
-		this.altaCuenta = altaCuenta;
+		this.fechaAltaCliente = fechaAltaCliente;
+		this.fechaAltaCuenta = fechaAltaCuenta;
 		this.fechaOperacion = fechaOperacion;
 		this.tipoOperacion = tipoOperacion;
 		this.monto = monto;
@@ -58,113 +60,153 @@ public class TransactionRaw implements Serializable {
 		this.idTransaccion = idTransaccion;
 		this.cuenta = cuenta;
 		this.producto = producto;
-		this.sucursal=sucursal;
+		this.crOp = crOp;
+		this.crCuenta = crCuenta;
 	}
 
-	public String getIdTransaccion() {
-		return idTransaccion;
-	}
-
-	public void setIdTransaccion(String idTransaccion) {
-		this.idTransaccion = idTransaccion;
-	}
-
-	public String getCuenta() {
-		return cuenta;
-	}
-
-	public void setCuenta(String cuenta) {
-		this.cuenta = cuenta;
-	}
-
-	public String getProducto() {
-		return producto;
-	}
-
-	public void setProducto(String producto) {
-		this.producto = producto;
-	}
-
-	public String getIdCliente() {
-		return idCliente;
-	}
-
-	public void setIdCliente(String idCliente) {
-		this.idCliente = idCliente;
-	}
-
-	public Double getMonto() {
-		return monto;
-	}
-
-	public void setMonto(Double monto) {
-		this.monto = monto;
-	}
-
-	public String getTipoOperacion() {
-		return tipoOperacion;
-	}
-
-	public void setTipoOperacion(String tipoOperacion) {
-		this.tipoOperacion = tipoOperacion;
-	}
 
 	public String getNombres() {
 		return nombres;
 	}
 
+
 	public void setNombres(String nombres) {
 		this.nombres = nombres;
 	}
+
 
 	public String getApellidos() {
 		return apellidos;
 	}
 
+
 	public void setApellidos(String apellidos) {
 		this.apellidos = apellidos;
 	}
+
 
 	public String getTipoPersona() {
 		return tipoPersona;
 	}
 
+
 	public void setTipoPersona(String tipoPersona) {
 		this.tipoPersona = tipoPersona;
 	}
 
-	public String getSucursalGestora() {
-		return sucursalGestora;
+
+	public String getFechaAltaCliente() {
+		return fechaAltaCliente;
 	}
 
-	public void setSucursalGestora(String sucursalGestora) {
-		this.sucursalGestora = sucursalGestora;
+
+	public void setFechaAltaCliente(String fechaAltaCliente) {
+		this.fechaAltaCliente = fechaAltaCliente;
 	}
 
-	public Date getAltaCuenta() {
-		return altaCuenta;
+
+	public String getFechaAltaCuenta() {
+		return fechaAltaCuenta;
 	}
 
-	public void setAltaCuenta(Date altaCuenta) {
-		this.altaCuenta = altaCuenta;
+
+	public void setFechaAltaCuenta(String fechaAltaCuenta) {
+		this.fechaAltaCuenta = fechaAltaCuenta;
 	}
 
-	public Date getFechaOperacion() {
+
+	public String getFechaOperacion() {
 		return fechaOperacion;
 	}
 
-	public void setFechaOperacion(Date fechaOperacion) {
+
+	public void setFechaOperacion(String fechaOperacion) {
 		this.fechaOperacion = fechaOperacion;
 	}
 
 
-	public String getSucursal() {
-		return sucursal;
+	public String getTipoOperacion() {
+		return tipoOperacion;
 	}
 
 
-	public void setSucursal(String sucursal) {
-		this.sucursal = sucursal;
+	public void setTipoOperacion(String tipoOperacion) {
+		this.tipoOperacion = tipoOperacion;
+	}
+
+
+	public Double getMonto() {
+		return monto;
+	}
+
+
+	public void setMonto(Double monto) {
+		this.monto = monto;
+	}
+
+
+	public String getIdCliente() {
+		return idCliente;
+	}
+
+
+	public void setIdCliente(String idCliente) {
+		this.idCliente = idCliente;
+	}
+
+
+	public String getIdTransaccion() {
+		return idTransaccion;
+	}
+
+
+	public void setIdTransaccion(String idTransaccion) {
+		this.idTransaccion = idTransaccion;
+	}
+
+
+	public String getCuenta() {
+		return cuenta;
+	}
+
+
+	public void setCuenta(String cuenta) {
+		this.cuenta = cuenta;
+	}
+
+
+	public String getProducto() {
+		return producto;
+	}
+
+
+	public void setProducto(String producto) {
+		this.producto = producto;
+	}
+
+
+	public String getCrOp() {
+		return crOp;
+	}
+
+
+	public void setCrOp(String crOp) {
+		this.crOp = crOp;
+	}
+
+
+	public String getCrCuenta() {
+		return crCuenta;
+	}
+
+
+	public void setCrCuenta(String crCuenta) {
+		this.crCuenta = crCuenta;
+	}
+
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 	
 }

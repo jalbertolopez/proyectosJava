@@ -1,6 +1,7 @@
 package mx.bbv.alerts.bussines.services;
 
 
+import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -68,7 +69,11 @@ public class AlertsBSImpl implements IAlertsBS{
 		alertsDataService.saveClient(t);
 		
 		// Persistimos en Alertas
-		alertsDataService.saveAlert(t);
+		String idAlert = "" + (new Date()).getTime();
+		alertsDataService.saveAlert(t, idAlert);
+		
+		// Persistimos en Cuenta
+		alertsDataService.saveAccount(t);
 		
 		// Obtenemos la transacciones del cliente para general el histórico de alertas
 		List<TransactionRaw> trs = alertsDataService.getTransactionsForIdMDB(t.getIdCliente());
@@ -78,7 +83,7 @@ public class AlertsBSImpl implements IAlertsBS{
 		}else{
 			for(TransactionRaw tr : trs){
 				logger.info("Persistiendo Alerta");
-				alertsDataService.saveTransaction(tr);
+				alertsDataService.saveTransaction(tr,idAlert);
 			}
 		}
 		

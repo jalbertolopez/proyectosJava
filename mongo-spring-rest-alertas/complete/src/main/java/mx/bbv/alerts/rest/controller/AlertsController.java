@@ -2,12 +2,19 @@ package mx.bbv.alerts.rest.controller;
 
 import java.util.List;
 
-import mx.bbv.alerts.rest.model.Alert;
-import mx.bbv.alerts.rest.model.Client;
-import mx.bbv.alerts.rest.model.Transaction;
+import mx.bbv.alerts.rest.dto.AlertasDTO;
+import mx.bbv.alerts.rest.dto.ClientesDTO;
+import mx.bbv.alerts.rest.dto.CrInfoDTO;
+import mx.bbv.alerts.rest.dto.CuentasDTO;
+import mx.bbv.alerts.rest.dto.OperacionesDTO;
+import mx.bbv.alerts.rest.dto.OperacionesRelevantesDTO;
+import mx.bbv.alerts.rest.repository.AccountsRepository;
 import mx.bbv.alerts.rest.repository.AlertsRepository;
 import mx.bbv.alerts.rest.repository.ClientRepository;
-import mx.bbv.alerts.rest.repository.TransactionRepository;
+import mx.bbv.alerts.rest.repository.CrsRepository;
+import mx.bbv.alerts.rest.repository.OperationsRepository;
+import mx.bbv.alerts.rest.repository.RelevantsRepository;
+import mx.bbv.alerts.rest.services.ServicesImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,40 +26,46 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/alertasPld")
 public class AlertsController {
+
 	@Autowired
-	private AlertsRepository repoAlerts;
+	ServicesImpl servicesImpl;
 	
-	@Autowired
-	private TransactionRepository repoTrans;
-
-	@Autowired
-	private ClientRepository repoClients;
-
-	 @RequestMapping("/alertas")
-	 public List<Alert> getAlerts() {
-	    return  repoAlerts.findAll();
+	@RequestMapping("/alertas")
+	 public List <AlertasDTO> getAlert(@RequestParam(value="idAlerta", defaultValue=" ") String idAlerta, @RequestParam(value="status", defaultValue=" ") String status){
+		return servicesImpl.getAlerts();
 	 }
 	 
 	 @RequestMapping("/transacciones")
-	 public List<Transaction> getTransactions( @RequestParam(value="idCliente", defaultValue=" ") String idCliente){
-	    if (idCliente.compareTo(" ") == 0){
-	    	return  repoTrans.findAll();
-	    }
-		return  repoTrans.findByIdCliente(idCliente);
+	 public List <OperacionesDTO> getTransactions(@RequestParam(value="idAlerta", defaultValue="") String idAlerta){
+	    return servicesImpl.getOperations(idAlerta);
 	 }
 	 
+	 @RequestMapping("/cuentas")
+	 public List <CuentasDTO> getAccounts(@RequestParam(value="idCliente", defaultValue="") String idCliente){		 
+	    return servicesImpl.getAccounts(idCliente);
+	 }
 	 
 	 @RequestMapping("/clientes")
-	 public List<Client> getClients(){
-	    return  repoClients.findAll();
+	 public List <ClientesDTO> getClients(@RequestParam(value="idCliente", defaultValue="") String idCliente){
+	    return servicesImpl.getClients(idCliente);
 	 }
 	 
+	 @RequestMapping("/transaccionesR")
+	 public List <OperacionesRelevantesDTO> getTransRelevantes(@RequestParam(value="idCuenta", defaultValue="") String idCuenta){
+	    return servicesImpl.getRelevatsOp(idCuenta);
+	 }
+	 
+	 @RequestMapping("/crOpInfo")
+	 public List <CrInfoDTO> getCrInfo(@RequestParam(value="idCr", defaultValue="") String idCr){
+	    return  servicesImpl.getCrInfo(idCr);
+	 }
+	  
 	 /* 
 	  * REST SERVICE DE PRUEBA 
 	  * */
 	 
 	 @RequestMapping("/alertasTest")
-	 public String getAlertTest(@RequestParam(value="idAlerta", defaultValue=" ") String idAlerta){
+	 public String getAlertTest(@RequestParam(value="idAlerta", defaultValue=" ") String idAlerta, @RequestParam(value="status", defaultValue=" ") String status){
 		 String json1 = "{"
 		 		+ "\"idAlerta\":\"0001\","
 		 		+ "\"fechaGen\":\"2015-06-11 17:59:32\","
@@ -82,6 +95,8 @@ public class AlertsController {
 		 }
 		 else if(idAlerta.compareTo("0002") == 0){
 			 return  "["+json2+"]";
+		 }else if(status.compareTo("RESUELTA") == 0){
+			 return "Todas las alertas Resueltas";
 		 }		 
 	    return  "["+json1+","+json2+"]";
 	 }
@@ -305,7 +320,7 @@ public class AlertsController {
 	    return  "["+json1+","+json2+"]";
 	 }
 	 
-	 @RequestMapping("/crinfoTest")
+	 @RequestMapping("/crOpInfoTest")
 	 public String getCrInfoTest(@RequestParam(value="idCr", defaultValue=" ") String idCr){
 		 String json1 = "{"
 				+ "\"idCr\":\"0050\","

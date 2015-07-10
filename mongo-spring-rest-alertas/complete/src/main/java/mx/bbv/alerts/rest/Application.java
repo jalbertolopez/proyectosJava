@@ -3,7 +3,6 @@ package mx.bbv.alerts.rest;
 
 import java.util.Date;
 
-import mx.bbv.alerts.rest.model.Alert;
 import mx.bbv.alerts.rest.repository.AlertsRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;

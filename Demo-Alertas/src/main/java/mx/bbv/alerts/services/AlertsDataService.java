@@ -1,15 +1,17 @@
 package mx.bbv.alerts.services;
 
+import java.util.Date;
 import java.util.List;
 
 import mx.bbv.alerts.model.ClientInfoStatus;
 import mx.bbv.alerts.model.TransactionRaw;
 import mx.bbv.alerts.model.TransactionStatus;
-import mx.bbv.alerts.model.dao.ClientDAO;
-import mx.bbv.alerts.model.dao.TransactionDAO;
+import mx.bbv.alerts.model.persistence.AccountPOJO;
 import mx.bbv.alerts.model.persistence.AlertPOJO;
 import mx.bbv.alerts.model.persistence.ClientPOJO;
-import mx.bbv.alerts.model.persistence.TransactionPOJO;
+import mx.bbv.alerts.model.persistence.CrPOJO;
+import mx.bbv.alerts.model.persistence.OperationPOJO;
+import mx.bbv.alerts.model.persistence.RelevantOpPOJO;
 import mx.bbv.alerts.model.persistence.TransactionRawPOJO;
 import mx.bbv.alerts.transforms.Transform2POJO;
 
@@ -37,12 +39,6 @@ public class AlertsDataService {
 	@Autowired
 	Transform2POJO transform2POJO;
 	
-//	@Autowired
-//	ClientDAO clientDAO;
-	
-//	@Autowired
-//	TransactionDAO transactionDAO;
-	
 	private MongoOperations mongoOps;
 	
 	private Logger logger = LoggerFactory.getLogger(AlertsDataService.class);
@@ -51,56 +47,76 @@ public class AlertsDataService {
 	
 	public boolean saveTransactionRAW(TransactionRaw t){
 		logger.info("\nENTRA A saveClient\n");
-		init();
+		init();		
 		TransactionRawPOJO transaction = transform2POJO.transform2TransactionRawPOJO(t);
 		logger.info("\npersistiendo ..... \n {} ",t);
 		mongoOps.insert(transaction,"transactionsRaw");
 	    return true;
 	}
 	
-	/* Servicio para persistir el cliente frauduleto POSTGRESQL */
+	/* Servicio para persistir el cliente frauduleto */
 	
 	public boolean saveClient(TransactionStatus t){
 		logger.info("\nENTRA A saveClient\n");
 		ClientPOJO client = transform2POJO.transform2ClientPOJO(t);
 		logger.info("\n persistiendo ..... \n {} ",client);		
 		mongoOps.insert(client,"clients");
-//	    clientDAO.save(client);
 		return true;
 	}
 	
-	/* Servicio para persistir las transacciones Ftraudulentas POSTGRESQL */
+	/* Servicio para persistir las transacciones de una alerta */
 
-	public boolean saveTransaction(TransactionRaw t){
-		logger.info("\nENTRA A saveTestatusransaction\n");
-		TransactionPOJO transaction = transform2POJO.transform2TransactionPOJO(t);
+	public boolean saveTransaction(TransactionRaw t, String idAlerta){
+		logger.info("\nENTRA a saveTransaction\n");
+		OperationPOJO transaction = transform2POJO.transform2OperationPOJO(t,idAlerta);
 		logger.info("\npersistiendo ..... \n {} ",transaction);
 		mongoOps.insert(transaction,"transactions");
-//		transactionDAO.save(transaction);
 		return true;
 	}
 	
-	/* Servicio para persistir las alertas generadas POSTGRESQL */
+	/* Servicio para persistir las alertas generadas */
 
-	public boolean saveAlert(TransactionStatus t){
+	public boolean saveAlert(TransactionStatus t, String idAlerta){
 		logger.info("\nENTRA A saveAlert\n");
-		AlertPOJO alerta = transform2POJO.transform2AlertPOJO(t);
+		AlertPOJO alerta = transform2POJO.transform2AlertPOJO(t, idAlerta);
 		logger.info("\npersistiendo ..... \n {} ",alerta);
 		mongoOps.insert(alerta,"alerts");
-//		transactionDAO.save(transaction);
 		return true;
 	}
 
-// PARA LOS REST SERVICES 
-//////////////////////////////////////////////////////////////////////////////////////////
-	/* Servicio para obtener todas las transacciones peligrosas para un cliente*/
-	public List<TransactionPOJO> getDangerousTransactions(String idClient ){
-		logger.info("\nENTRA A getDangerousTransactions\n");
+	/* Servicio para persistir las cuenta alertada */
+	public boolean saveAccount(TransactionStatus t){
+		logger.info("\nENTRA A saveAccount\n");
+		AccountPOJO cuenta = transform2POJO.transform2AccountPOJO(t);
+		logger.info("\npersistiendo ..... \n {} ",cuenta);
+		mongoOps.insert(cuenta,"accounts");
+		return true;
+	}
+	
+	/* Servicio para persistir las centros responsables */
+	public boolean saveCentroResponsable(CrPOJO cr){
+		logger.info("\nENTRA A saveCentroResponable\n");
 		init();
-		return mongoTemplate.find(query(where("idCliente").is(idClient)),TransactionPOJO.class, "transactions");
+		mongoOps.insert(cr,"crs");
+		return true;
+	}
+	
+	/* Servicio para persistir operaciones Relevantes */
+	public boolean saveRelevantes(RelevantOpPOJO r){
+		logger.info("\nENTRA A saveRelevantes\n");
+		init();
+		mongoOps.insert(r,"relevants");
+		return true;
 	}
 	
 	/* Servicio para obtener todas las transacciones peligrosas para un cliente*/
+	public List<OperationPOJO> getDangerousTransactions(String idClient ){
+		logger.info("\nENTRA A getDangerousTransactions\n");
+		init();
+		return mongoTemplate.find(query(where("idCliente").is(idClient)),OperationPOJO.class, "transactions");
+	}
+	
+	/* Servicio para obtener todas las alertas generadas*/
 	public List<AlertPOJO> getAllAlerts(){
 		logger.info("\nENTRA A getAllAlerts\n");
 		init();
@@ -113,9 +129,8 @@ public class AlertsDataService {
 		init();
 		return mongoTemplate.findAll(ClientPOJO.class, "clients");
 	}
-//////////////////////////////////////////////////////////////////////////////////////////	
 
-	/* Servicio para obtener todas las transacciones relacionadas a un cliente de MONGODB*/
+	/* Servicio para obtener todas las transacciones RAW relacionadas a un cliente de MONGODB*/
 	public List<TransactionRaw> getTransactionsForIdMDB(String idClient ){
 		logger.info("\nENTRA A getTransactionsForIdMDB\n");
 		init();
@@ -129,7 +144,7 @@ public class AlertsDataService {
 		logger.info("\nENTRA A getAccumulatedAmount\n");
 		init();
 		
-		TypedAggregation<TransactionPOJO> agg = newAggregation(TransactionPOJO.class,
+		TypedAggregation<TransactionRawPOJO> agg = newAggregation(TransactionRawPOJO.class,
 			    group("idCliente").sum("monto").as("montoAcumulado"),
 				project("montoAcumulado").and("idCliente").previousOperation(),
 				match(where("idCliente").is(idClient))

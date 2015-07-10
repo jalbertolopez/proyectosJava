@@ -4,31 +4,45 @@ import java.util.Date;
 
 public class TransactionRawPOJO{
 
+	
 	private String nombres;
 	private String apellidos;
 	private String tipoPersona; // FISICA o MORAL
-	private String sucursalGestora; // ZONA GEOGRÁFICA DE LA SUCURSAL DONDE SE ABRIO LA CUENTA
-	private Date altaCuenta; // FECHA DE APERTURA DE LA CUENTA
-	private Date fechaOperacion; // FECHA EXACTA TRANSACCIÓN
+	private String fechaAltaCliente; // FECHA DE ALTA CLIENTE
+	private String fechaAltaCuenta; // FECHA DE APERTURA DE LA CUENTA
+	private String fechaOperacion; // FECHA EXACTA TRANSACCIÓN
 	private String tipoOperacion; // ABONO O RETIRO
 	private Double monto; // MONTO DE LA OPERACION
 	private String idCliente; // IDENTIFICADOR ÚNICO CLIENTE
 	private String idTransaccion; // IDENTIFICADOR ÚNICO DE LA TRANSACCIÓN
 	private String cuenta; // NÚMERO DE CUENTA
 	private String producto; // LIBRETONES, PRACTICAJAS, ETC
-	private String sucursal; // ZONA GEOGRÁFICA DE LA SUCURSAL DE LA TRANSACCIÓN
-	
+	private String crOp; // CR OPERACIÓN
+	private String crCuenta; // CR de la cuenta
+	private Double montoAcumulado; // MONTO ACUMULADO POR CUENTA
+	@Override
+	public String toString() {
+		return "TransactionRawPOJO [nombres=" + nombres + ", apellidos="
+				+ apellidos + ", tipoPersona=" + tipoPersona
+				+ ", fechaAltaCliente=" + fechaAltaCliente
+				+ ", fechaAltaCuenta=" + fechaAltaCuenta + ", fechaOperacion="
+				+ fechaOperacion + ", tipoOperacion=" + tipoOperacion
+				+ ", monto=" + monto + ", idCliente=" + idCliente
+				+ ", idTransaccion=" + idTransaccion + ", cuenta=" + cuenta
+				+ ", producto=" + producto + ", crOp=" + crOp + ", crCuenta="
+				+ crCuenta + ", montoAcumulado=" + montoAcumulado + "]";
+	}
 	public TransactionRawPOJO(String nombres, String apellidos,
-			String tipoPersona, String sucursalGestora, Date altaCuenta,
-			Date fechaOperacion, String tipoOperacion, Double monto,
+			String tipoPersona, String fechaAltaCliente, String fechaAltaCuenta,
+			String fechaOperacion, String tipoOperacion, Double monto,
 			String idCliente, String idTransaccion, String cuenta,
-			String producto, String sucursal) {
+			String producto, String crOp, String crCuenta, Double montoAcumulado) {
 		super();
 		this.nombres = nombres;
 		this.apellidos = apellidos;
 		this.tipoPersona = tipoPersona;
-		this.sucursalGestora = sucursalGestora;
-		this.altaCuenta = altaCuenta;
+		this.fechaAltaCliente = fechaAltaCliente;
+		this.fechaAltaCuenta = fechaAltaCuenta;
 		this.fechaOperacion = fechaOperacion;
 		this.tipoOperacion = tipoOperacion;
 		this.monto = monto;
@@ -36,7 +50,9 @@ public class TransactionRawPOJO{
 		this.idTransaccion = idTransaccion;
 		this.cuenta = cuenta;
 		this.producto = producto;
-		this.sucursal = sucursal;
+		this.crOp = crOp;
+		this.crCuenta = crCuenta;
+		this.montoAcumulado = montoAcumulado;
 	}
 	public TransactionRawPOJO() {
 		super();
@@ -59,22 +75,22 @@ public class TransactionRawPOJO{
 	public void setTipoPersona(String tipoPersona) {
 		this.tipoPersona = tipoPersona;
 	}
-	public String getSucursalGestora() {
-		return sucursalGestora;
+	public String getFechaAltaCliente() {
+		return fechaAltaCliente;
 	}
-	public void setSucursalGestora(String sucursalGestora) {
-		this.sucursalGestora = sucursalGestora;
+	public void setFechaAltaCliente(String fechaAltaCliente) {
+		this.fechaAltaCliente = fechaAltaCliente;
 	}
-	public Date getAltaCuenta() {
-		return altaCuenta;
+	public String getFechaAltaCuenta() {
+		return fechaAltaCuenta;
 	}
-	public void setAltaCuenta(Date altaCuenta) {
-		this.altaCuenta = altaCuenta;
+	public void setFechaAltaCuenta(String fechaAltaCuenta) {
+		this.fechaAltaCuenta = fechaAltaCuenta;
 	}
-	public Date getFechaOperacion() {
+	public String getFechaOperacion() {
 		return fechaOperacion;
 	}
-	public void setFechaOperacion(Date fechaOperacion) {
+	public void setFechaOperacion(String fechaOperacion) {
 		this.fechaOperacion = fechaOperacion;
 	}
 	public String getTipoOperacion() {
@@ -113,10 +129,22 @@ public class TransactionRawPOJO{
 	public void setProducto(String producto) {
 		this.producto = producto;
 	}
-	public String getSucursal() {
-		return sucursal;
+	public String getCrOp() {
+		return crOp;
 	}
-	public void setSucursal(String sucursal) {
-		this.sucursal = sucursal;
+	public void setCrOp(String crOp) {
+		this.crOp = crOp;
+	}
+	public String getCrCuenta() {
+		return crCuenta;
+	}
+	public void setCrCuenta(String crCuenta) {
+		this.crCuenta = crCuenta;
+	}
+	public Double getMontoAcumulado() {
+		return montoAcumulado;
+	}
+	public void setMontoAcumulado(Double montoAcumulado) {
+		this.montoAcumulado = montoAcumulado;
 	}
 }

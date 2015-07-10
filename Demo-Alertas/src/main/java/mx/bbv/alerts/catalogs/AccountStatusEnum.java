@@ -3,12 +3,12 @@ package mx.bbv.alerts.catalogs;
 /*
  * CATÁLOGO PARA ETIQUETAR EL GRADO DE RIESGO
  * */
-public enum ClientStatusEnum {
+public enum AccountStatusEnum {
 	UNKNOWN(0), UNLOCK(1), LOCK(2);
 
 	private int id;
 
-	ClientStatusEnum (int id) {
+	AccountStatusEnum (int id) {
 		this.id = id;
 	}
 
@@ -17,7 +17,7 @@ public enum ClientStatusEnum {
 	 * @param id
 	 * @return
 	 */
-	public static ClientStatusEnum fromInt(int id) {
+	public static AccountStatusEnum fromInt(int id) {
 
 		if (id == UNLOCK.id)
 			return UNLOCK;
